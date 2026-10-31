@@ -57,6 +57,17 @@ cmp -s "$ws/dist/报告.txt" "$root/dist/报告.txt" || fail "a UTF-8 name broke
 [ ! -e "$root/secret/password.txt" ] || fail "a file outside the pattern must not be sent"
 grep -q "127.0.0.1" "$ws/known_hosts" || fail "knownHostsFile should have recorded the host key"
 
+# the runner's own scratch must never be uploaded, whatever the pattern says
+mkdir -p "$ws/.atoms/run1" "$ws/dist/sub"
+printf '{"token": "super-secret"}' >"$ws/.atoms/run1/.secrets.json"
+printf '{"a": 1}' >"$ws/.atoms/run1/input.json"
+printf 'ship\n' >"$ws/dist/sub/keep.txt"
+write_input "{\"host\": \"127.0.0.1\", \"port\": \"$port\", \"user\": \"$user\", \"remoteDir\": \"$root/scratch\", \"sourceFiles\": \"**/*\", \"keyFile\": \"deploy_key\", \"knownHostsFile\": \"known_hosts\"}"
+run "$ws" >"$ws/atom.log" 2>&1 || fail "upload with an all-files pattern failed: $(cat "$ws/output.json")"
+[ ! -e "$root/scratch/.atoms/run1/.secrets.json" ] || fail "the runner's secrets were uploaded"
+[ ! -e "$root/scratch/.atoms" ] || fail "the runner's scratch directory was uploaded"
+[ -f "$root/scratch/dist/sub/keep.txt" ] || fail "a real file was skipped along with the scratch"
+
 # --- deleteRemote clears what is no longer produced
 printf 'stale\n' >"$root/dist/old.txt"
 rm -f "$ws/dist/app.jar"

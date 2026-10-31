@@ -149,6 +149,17 @@ public class SshPublishAtom implements AtomTask {
     }
 
     /** Files under {@code base} matching any pattern in {@code sourceFiles}, minus anything in {@code exclude}. */
+
+    /**
+     * The runner keeps {@code input.json}, {@code .secrets.json} and {@code output.json} under
+     * {@code .atoms/<runId>/}. An upload pattern of {@code **}{@code /*} would otherwise ship a credential file to a
+     * remote host, so the runner's scratch directory is never part of the payload.
+     */
+    static boolean isRunnerScratch(String relative) {
+        return relative.startsWith(".atoms/") || relative.equals(".atoms")
+                || relative.endsWith("/.secrets.json") || relative.equals(".secrets.json");
+    }
+
     private static List<Path> collect(Path base, String sourceFiles, String exclude) throws IOException {
         List<String> patterns = split(sourceFiles);
         List<String> excluded = split(exclude);
@@ -170,6 +181,9 @@ public class SshPublishAtom implements AtomTask {
         List<Path> kept = new ArrayList<>();
         for (Path candidate : matches) {
             String relative = base.relativize(candidate).toString().replace('\\', '/');
+            if (isRunnerScratch(relative)) {
+                continue;
+            }
             boolean skip = false;
             for (String pattern : excluded) {
                 if (matchesPattern(relative, pattern)) {
