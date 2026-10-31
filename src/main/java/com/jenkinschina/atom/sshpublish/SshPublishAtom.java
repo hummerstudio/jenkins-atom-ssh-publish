@@ -99,6 +99,10 @@ public class SshPublishAtom implements AtomTask {
             command.add("BatchMode=yes");
             command.add("-o");
             command.add("StrictHostKeyChecking=" + (strict.isEmpty() ? "accept-new" : strict));
+            // Debian/Ubuntu default to hashed known_hosts, which reads as "the key was never recorded" to a human
+            // and to every script that greps the file. Keep the entries readable.
+            command.add("-o");
+            command.add("HashKnownHosts=no");
             if (!knownHosts.isEmpty()) {
                 Path known = workspace.resolve(knownHosts).normalize();
                 Files.createDirectories(known.getParent() == null ? workspace : known.getParent());
