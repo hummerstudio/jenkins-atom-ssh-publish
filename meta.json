@@ -1,0 +1,12 @@
+{
+  "name": "Publish over SSH",
+  "summary": "Copies files to another machine over SSH, keeping their directory structure.",
+  "author": "hummerstudio",
+  "license": "MIT",
+  "tags": [
+    "official-port",
+    "ssh",
+    "deploy"
+  ],
+  "homepage": "https://github.com/hummerstudio/jenkins-atom-ssh-publish"
+}

@@ -1,0 +1,102 @@
+{
+  "atomCode": "ssh-publish",
+  "name": "Publish over SSH",
+  "version": "1.0.0",
+  "description": "Copies files to another machine over SSH, keeping their directory structure.",
+  "execution": {
+    "packagePath": "ssh-publish.jar",
+    "language": "java",
+    "target": "$atom_java_path -cp ssh-publish.jar com.jenkinschina.atom.sdk.AtomRunner"
+  },
+  "input": {
+    "host": {
+      "label": "主机",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "port": {
+      "label": "端口",
+      "type": "vuex-input",
+      "default": "22"
+    },
+    "user": {
+      "label": "用户名",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "remoteDir": {
+      "label": "远端目录（不存在会创建）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "sourceFiles": {
+      "label": "要传的文件（逗号分隔的 glob）",
+      "type": "vuex-input",
+      "default": "**/*"
+    },
+    "exclude": {
+      "label": "排除（逗号分隔的 glob）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "baseDir": {
+      "label": "相对目录（默认 workspace）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "keyFile": {
+      "label": "私钥路径（workspace 内）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "key": {
+      "label": "或直接给私钥内容",
+      "type": "password",
+      "default": ""
+    },
+    "deleteRemote": {
+      "label": "先清空远端目录",
+      "type": "checkbox",
+      "default": "false"
+    },
+    "timeoutSeconds": {
+      "label": "超时（秒）",
+      "type": "vuex-input",
+      "default": "120"
+    },
+    "knownHostsFile": {
+      "label": "known_hosts 文件（留空用系统默认）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "strictHostKeyChecking": {
+      "label": "主机密钥校验（accept-new / yes / no）",
+      "type": "vuex-input",
+      "default": "accept-new"
+    }
+  },
+  "output": {
+    "filesUploaded": {
+      "type": "string",
+      "description": "传输的文件数"
+    },
+    "bytes": {
+      "type": "string",
+      "description": "传输的字节数（未压缩的 tar）"
+    },
+    "remoteDir": {
+      "type": "string",
+      "description": "远端目录"
+    },
+    "host": {
+      "type": "string",
+      "description": "主机"
+    }
+  },
+  "x-jenkins": {
+    "protocol": "jenkins-1",
+    "requires": {
+      "runner": ">=0.4.0"
+    }
+  }
+}
