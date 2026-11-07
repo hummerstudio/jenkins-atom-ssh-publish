@@ -10,7 +10,7 @@ publish-over-ssh 插件驱动 scp/rsync 并带一大堆传输选项；有用的�
 - 退出码非 0 才算失败；`Permission denied`/`Host key verification` 归 `USER`，其余归 `ENVIRONMENT`
 
 ```bash
-./build.sh && ./tools/smoke.sh
+mvn verify
 ```
 
-smoke 会在 `127.0.0.1:2222` 起一个**临时 sshd**（自己的 host key 与 authorized_keys，不碰系统配置），传完再回到磁盘上逐字节对账。
+`src/test/java/atom/SshPublishIT.java` 会在一个临时端口起一个**临时 sshd**（自己的 host key 与 authorized_keys，不碰系统配置），传完再回到磁盘上逐字节对账。
