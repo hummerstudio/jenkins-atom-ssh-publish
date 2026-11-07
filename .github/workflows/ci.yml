@@ -37,4 +37,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ssh-publish-atom
-          path: atom/dist/ssh-publish/
+          path: atom/target/dist/ssh-publish/
